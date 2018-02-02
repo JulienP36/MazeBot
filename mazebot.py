@@ -1,16 +1,14 @@
 import discord
 import numpy as np
 import asyncio
+import sys
 from random import sample
 from time import sleep
 from random import randint
 
-width = 51
-height = 51
-
 client = discord.Client()
 
-def make_maze():
+def make_maze(width, height):
     maze_table = np.zeros((height,width), dtype='i')
     for i in range(2, (height - 2), 1):
         for j in range(2, (width - 2), 1):
@@ -18,13 +16,25 @@ def make_maze():
                 maze_table[i][j] = 1
                 direction = randint(1,4)
                 if (direction == 1):
-                    maze_table[i+1][j] = 1
+                    if (maze_table[i+1][j] == 1):
+                        j -= 1
+                    else:
+                        maze_table[i+1][j] = 1
                 elif (direction == 2):
-                    maze_table[i-1][j] = 1
+                    if (maze_table[i-1][j] == 1):
+                        j -= 1
+                    else:
+                        maze_table[i-1][j] = 1
                 elif (direction == 3):
-                    maze_table[i][j+1] = 1
+                    if (maze_table[i][j+1] == 1):
+                        j -= 1
+                    else:
+                        maze_table[i][j+1] = 1
                 else:
-                    maze_table[i][j-1] = 1
+                    if (maze_table[i][j-1] == 1):
+                        j -= 1
+                    else:
+                        maze_table[i][j-1] = 1
     for i in range(0, height, 1):
         for j in range(0, width, 1):
             if ((i == 0) or (j == 0) or (i == height - 1) or (j == width - 1)):
@@ -41,19 +51,37 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('!test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
-
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
+    if message.content.startswith('!help'):
+        await client.send_message(message.channel, "```Command list :\n\n!maze {width} {height} : generate a maze, minimum value is 5 and max value is 39```")
+        await client.send_message(message.channel, "```    If given value is to big or small, the default one is used (11x11), same for no arguments```")
+        await client.send_message(message.channel, "```    If only one argument is given, then the maze generate a square with given value```")
+        await client.send_message(message.channel, "```!help : display available commands```")
     elif message.content.startswith('!maze'):
-        maze_table = make_maze()
+        width = 11
+        height = 11
+        try:
+            width = int(message.content.split()[1])
+            if ((width < 5) or (width > 39)):
+                width = 11
+                await client.send_message(message.channel, "Argument too small or big, defaulting to 11\n")
+            if (width % 2 == 0):
+                width += 1
+            try:
+                height = int(message.content.split()[2])
+                if ((height < 5) or (height > 39)):
+                    height = 11
+                    await client.send_message(message.channel, "Argument too small or big, defaulting to 11\n")
+                if (height % 2 == 0):
+                    height += 1
+            except Exception:
+                height = width
+                await client.send_message(message.channel, "No height given\n")
+                pass
+        except Exception:
+            await client.send_message(message.channel, "No arguments given\n")
+            pass
+        await client.send_message(message.channel, "generating " + str(width) + "x" + str(height) + " maze ...")
+        maze_table = make_maze(width, height)
         for i in range(0, height, 1):
             maze_part = ''
             for j in range(0, width, 1):
@@ -66,4 +94,4 @@ async def on_message(message):
                 else:
                     maze_part = maze_part + '██'
             await client.send_message(message.channel, maze_part)
-client.run('bot_secret_token')
+client.run('bot_token')
