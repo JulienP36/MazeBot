@@ -52,7 +52,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('!help'):
-        await client.send_message(message.channel, "```Command list :\n\n!maze {width} {height} : generate a maze, minimum value is 5 and max value is 31\n    If given value is to big or small, the default one is used (11x11), same for no arguments\n    If only one argument is given, then the maze generate a square with given value\n!help : display available commands```")
+        await client.send_message(message.channel, "```Command list :\n\n!maze {width} {height} : generate a maze, minimum value is 5 and max value is 31\n    "
+        "If given value is to big or small, the default one is used (11x11), same for no arguments\n    "
+        "If only one argument is given, then the maze generate a square with given value\n!help : display available commands```")
     elif message.content.startswith('!maze'):
         width = 11
         height = 11
