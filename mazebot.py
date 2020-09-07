@@ -52,7 +52,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('!help'):
-        await client.send_message(message.channel, "```Command list :\n\n!maze {width} {height} : generate a maze, minimum value is 5 and max value is 31\n    "
+        await message.channel.send("```Command list :\n\n!maze {width} {height} : generate a maze, minimum value is 5 and max value is 31\n    "
         "If given value is to big or small, the default one is used (11x11), same for no arguments\n    "
         "If only one argument is given, then the maze generate a square with given value\n!help : display available commands```")
     elif message.content.startswith('!maze'):
@@ -62,22 +62,22 @@ async def on_message(message):
             width = int(message.content.split()[1])
             if ((width < 5) or (width > 31)):
                 width = 11
-                await client.send_message(message.channel, "Argument too small or big, defaulting to 11\n")
+                await message.channel.send("Argument too small or big, defaulting to 11\n")
             if (width % 2 == 0):
                 width += 1
             try:
                 height = int(message.content.split()[2])
                 if ((height < 5) or (height > 31)):
                     height = 11
-                    await client.send_message(message.channel, "Argument too small or big, defaulting to 11\n")
+                    await message.channel.send("Argument too small or big, defaulting to 11\n")
                 if (height % 2 == 0):
                     height += 1
             except Exception:
                 height = width
-                await client.send_message(message.channel, "No height given\n")
+                await message.channel.send("No height given\n")
                 pass
         except Exception:
-            await client.send_message(message.channel, "No arguments given\n")
+            await message.channel.send("No arguments given\n")
             pass
         maze_part = "generating " + str(width) + "x" + str(height) + " maze ...\n\n"
         maze_table = make_maze(width, height)
@@ -92,5 +92,5 @@ async def on_message(message):
                 else:
                     maze_part = maze_part + '██'
             maze_part = maze_part + '\n'
-        await client.send_message(message.channel, maze_part)
-client.run('bot_token')
+        await message.channel.send(maze_part)
+client.run("NDA0NDAzODA3MTQ2MjEzMzk2.WmPEZQ.vzTLcYIh4gNkIYpHzJFd1-h2VT8")
