@@ -93,4 +93,4 @@ async def on_message(message):
                     maze_part = maze_part + '██'
             maze_part = maze_part + '\n'
         await message.channel.send(maze_part)
-client.run("NDA0NDAzODA3MTQ2MjEzMzk2.WmPEZQ.vzTLcYIh4gNkIYpHzJFd1-h2VT8")
+client.run("bot token")
